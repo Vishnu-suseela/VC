@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import {
   Counter,
+  Curtain,
   HeroContent,
   HeroHeadline,
   HeroLine,
@@ -14,8 +15,9 @@ import {
   StaggerItem,
   WordReveal,
 } from '@/components/motion'
+import { ServiceIndex } from '@/components/service-index'
 import { SunPathStory } from '@/components/sun-path-story'
-import { cameras, CONTACT, projects, services, solarSystems, stats } from '@/lib/site-data'
+import { cameras, CONTACT, projects, solarSystems, stats } from '@/lib/site-data'
 
 const marqueeItems = [
   'MNRE empanelled',
@@ -312,7 +314,7 @@ export default function HomePage() {
           </Reveal>
         </div>
 
-        <Reveal>
+        <Curtain>
           <Link href="/projects" className="featured group" style={{ display: 'block' }}>
             <div className="frame frame-zoom" style={{ position: 'absolute', inset: 0 }}>
               <Image
@@ -320,7 +322,7 @@ export default function HomePage() {
                 alt={featured.title}
                 fill
                 sizes="100vw"
-                style={{ objectPosition: 'center 55%' }}
+                style={{ objectPosition: 'center 58%' }}
               />
             </div>
             <div className="featured-copy">
@@ -329,7 +331,7 @@ export default function HomePage() {
               <p>{featured.meta}</p>
             </div>
           </Link>
-        </Reveal>
+        </Curtain>
 
         <Stagger className="card-grid card-grid-2" step={0.08}>
           {rest.map((p) => (
@@ -362,37 +364,30 @@ export default function HomePage() {
               <Reveal>
                 <p className="chapter">04 — Services</p>
               </Reveal>
-              <WordReveal as="h2" text="The work does not end at handover." />
+              <WordReveal as="h2" text="Handover is the beginning, not the invoice." />
             </div>
             <Reveal delay={0.1}>
               <p>
-                A solar array is a twenty-five year asset and a camera network is a living system. Both need someone who answers
-                the phone.
+                An array is a twenty-five year asset. A camera network is a system that lives. Five services carry both, in the
+                order they are actually needed — survey to install, install to upkeep, upkeep to the call you make at 9pm.
               </p>
             </Reveal>
           </div>
 
-          <div>
-            {services.map((s, i) => (
-              <Reveal key={s.slug} delay={i * 0.05}>
-                <Link href={`/services#${s.slug}`} className="service-row group" style={{ display: 'grid' }}>
-                  <div className="frame frame-zoom">
-                    <Image
-                      src={s.image || '/placeholder.svg'}
-                      alt={s.title}
-                      fill
-                      sizes="(min-width: 940px) 210px, 100vw"
-                      style={{ objectPosition: 'center 50%' }}
-                    />
-                  </div>
-                  <span className="service-row-num">{s.number}</span>
-                  <h3>{s.title}</h3>
-                  <p>{s.text}</p>
-                  <ArrowUpRight className="service-row-arrow" aria-hidden="true" />
-                </Link>
-              </Reveal>
-            ))}
-          </div>
+          <ServiceIndex />
+
+          <Reveal delay={0.1}>
+            <div style={{ marginTop: '3.5rem', display: 'flex', flexWrap: 'wrap', gap: '0.8rem' }}>
+              <Link href="/services" className="button button-ghost">
+                All five services in detail
+                <ArrowUpRight aria-hidden="true" />
+              </Link>
+              <Link href="/warranty" className="button button-ghost">
+                Warranty &amp; response times
+                <ArrowRight aria-hidden="true" />
+              </Link>
+            </div>
+          </Reveal>
         </div>
       </section>
 

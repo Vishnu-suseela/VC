@@ -151,6 +151,50 @@ export function Parallax({ children, distance = 70, className }: { children: Rea
   )
 }
 
+/* ---------- Curtain: occlusion reveal (image uncovers itself) ---------- */
+export function Curtain({
+  children,
+  className,
+  from = 'bottom',
+  delay = 0,
+  style,
+}: {
+  children: ReactNode
+  className?: string
+  from?: 'bottom' | 'left'
+  delay?: number
+  style?: CSSProperties
+}) {
+  const reduce = useReducedMotion()
+  const closed = from === 'bottom' ? 'inset(100% 0% 0% 0%)' : 'inset(0% 100% 0% 0%)'
+
+  return (
+    <motion.div
+      className={className}
+      style={style}
+      initial={reduce ? undefined : { clipPath: closed, opacity: 0.4 }}
+      whileInView={reduce ? undefined : { clipPath: 'inset(0% 0% 0% 0%)', opacity: 1 }}
+      viewport={{ once: true, margin: '-12% 0px -12% 0px' }}
+      transition={{ duration: 1.25, delay, ease: [0.16, 1, 0.3, 1] }}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
+/* ---------- Scroll-drawn hairline rule ---------- */
+export function ScrollRule({ className }: { className?: string }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const reduce = useReducedMotion()
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 85%', 'start 45%'] })
+  const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 26 })
+  return (
+    <div ref={ref} className={className} aria-hidden>
+      <motion.span style={reduce ? { transform: 'scaleX(1)' } : { scaleX, transformOrigin: 'left' }} />
+    </div>
+  )
+}
+
 /* ---------- Animated counter ---------- */
 export function Counter({
   value,
