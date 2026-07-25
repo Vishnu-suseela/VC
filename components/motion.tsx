@@ -76,7 +76,7 @@ export function StaggerItem({
   children,
   className,
   style,
-  y = 44,
+  y = 64,
 }: {
   children: ReactNode
   className?: string
@@ -86,12 +86,31 @@ export function StaggerItem({
   return (
     <motion.div
       className={className}
-      style={{ willChange: 'transform, opacity, clip-path', ...style }}
+      style={{ willChange: 'transform, opacity, clip-path, filter', transformPerspective: 1400, ...style }}
       variants={{
-        hidden: { opacity: 0, y, scale: 0.975, clipPath: 'inset(12% 0% 0% 0%)', filter: 'blur(6px)' },
-        show: { opacity: 1, y: 0, scale: 1, clipPath: 'inset(0% 0% 0% 0%)', filter: 'blur(0px)' },
+        hidden: {
+          opacity: 0,
+          y,
+          scale: 0.955,
+          rotateX: 7,
+          clipPath: 'inset(18% 0% 0% 0%)',
+          filter: 'blur(9px) brightness(0.7)',
+        },
+        show: {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          rotateX: 0,
+          clipPath: 'inset(0% 0% 0% 0%)',
+          filter: 'blur(0px) brightness(1)',
+        },
       }}
-      transition={{ duration: 1.05, ease: [0.16, 1, 0.3, 1] }}
+      transition={{
+        duration: 1.15,
+        ease: [0.16, 1, 0.3, 1],
+        filter: { duration: 1.4, ease: [0.16, 1, 0.3, 1] },
+        clipPath: { duration: 1.3, ease: [0.16, 1, 0.3, 1] },
+      }}
     >
       {children}
     </motion.div>
