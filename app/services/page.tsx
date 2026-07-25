@@ -1,9 +1,9 @@
-import { ArrowUpRight, Check } from 'lucide-react'
-import Image from 'next/image'
+import { ArrowRight } from 'lucide-react'
 import type { Metadata } from 'next'
-import { Reveal, Stagger, StaggerItem } from '@/components/motion'
+import Link from 'next/link'
+import { Reveal, ScrollRule, Stagger, StaggerItem, WordReveal } from '@/components/motion'
 import { CtaBand, PageHero, SectionHeading } from '@/components/page-shell'
-import { services } from '@/lib/site-data'
+import { ServiceIndex } from '@/components/service-index'
 
 export const metadata: Metadata = {
   title: 'Services — Solar Installation, CCTV, Maintenance & Support',
@@ -11,76 +11,97 @@ export const metadata: Metadata = {
     'End-to-end solar installation, CCTV services, panel maintenance, annual maintenance contracts and ongoing technical support across Andhra Pradesh and Telangana.',
 }
 
+const promise = [
+  { k: 'Survey to quote', v: '72 hours', note: 'Measured drawing, shade study and written specification.' },
+  { k: 'Install window', v: '2–5 days', note: 'Residential rooftop, from scaffolding to commissioning.' },
+  { k: 'Support response', v: 'Same day', note: 'Remote diagnostics first; a technician on site if it needs one.' },
+  { k: 'Performance cover', v: '25 years', note: 'Module warranty, with inverter and workmanship documented separately.' },
+]
+
 export default function ServicesPage() {
   return (
     <>
       <PageHero
         kicker="Services"
-        title="The work does not end at handover."
-        copy="A solar array is a twenty-five year asset and a camera network is a living system. Both need someone who answers the phone."
+        title="Five services. One accountable team."
+        copy="Nothing here is subcontracted. The crew that surveys your roof is the crew that installs it, and the technician who answers your call already knows the system by name."
         image="/images/service-install.jpeg"
-        position="center 50%"
+        position="center 42%"
         crumbs={[['Services', '/services']]}
       />
 
       <section className="section-shell">
         <SectionHeading
-          kicker="What we do"
-          title="Five services. One accountable team."
-          copy="From the first survey to the tenth annual inspection. Every service below is delivered by the same crew that knows your system."
+          kicker="The sequence"
+          title="Read top to bottom. That is the order it happens in."
+          copy="Each service hands over to the next. Scroll through and the frame on the left follows you, so you can see the work while you read what it covers."
         />
+        <ServiceIndex detailed />
+      </section>
 
-        <div style={{ display: 'grid', gap: '5rem' }}>
-          {services.map((s, i) => (
-            <div
-              key={s.slug}
-              id={s.slug}
-              style={{
-                display: 'grid',
-                gap: '2.5rem',
-                gridTemplateColumns: '1fr',
-                alignItems: 'center',
-              }}
-              className="solar-detail"
-            >
-              <Reveal className={i % 2 === 1 ? 'solar-detail-media-alt' : 'solar-detail-media'}>
+      <section className="section-shell section-shell-tight" aria-label="Service commitments">
+        <ScrollRule className="scroll-rule" />
+        <div style={{ marginTop: '3.5rem', display: 'grid', gap: '2.5rem' }}>
+          <div>
+            <Reveal>
+              <p className="chapter">In writing</p>
+            </Reveal>
+            <WordReveal as="h2" className="display-md" text="The numbers we commit to before you commit to us." />
+          </div>
+
+          <Stagger className="card-grid card-grid-2" step={0.08}>
+            {promise.map((p) => (
+              <StaggerItem key={p.k}>
                 <div
-                  className="frame frame-inset frame-zoom"
-                  style={{ aspectRatio: '4 / 3', borderRadius: 3, border: '1px solid var(--line)' }}
+                  style={{
+                    display: 'grid',
+                    gap: '0.6rem',
+                    padding: '2rem',
+                    border: '1px solid var(--line)',
+                    borderRadius: 3,
+                    background: 'var(--panel)',
+                    height: '100%',
+                    alignContent: 'start',
+                  }}
                 >
-                  <Image
-                    src={s.image || '/placeholder.svg'}
-                    alt={s.title}
-                    fill
-                    sizes="(min-width: 900px) 50vw, 100vw"
-                    style={{ objectPosition: 'center 50%' }}
-                  />
+                  <span className="mono-label">{p.k}</span>
+                  <b
+                    style={{
+                      fontFamily: 'var(--font-serif)',
+                      fontWeight: 400,
+                      fontSize: 'clamp(1.7rem, 3vw, 2.4rem)',
+                      color: 'var(--amber)',
+                      lineHeight: 1.05,
+                    }}
+                  >
+                    {p.v}
+                  </b>
+                  <p className="prose-body" style={{ fontSize: '0.9rem' }}>
+                    {p.note}
+                  </p>
                 </div>
-              </Reveal>
+              </StaggerItem>
+            ))}
+          </Stagger>
 
-              <Reveal delay={0.1}>
-                <div style={{ display: 'grid', gap: '1.2rem' }}>
-                  <p className="chapter">{s.number} — {s.title}</p>
-                  <h2 className="display-sm">{s.title}</h2>
-                  <p className="prose-body">{s.text}</p>
-                  <ul className="check-list">
-                    {s.includes.map((item) => (
-                      <li key={item}>
-                        <Check aria-hidden="true" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </Reveal>
+          <Reveal delay={0.1}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.8rem' }}>
+              <Link href="/warranty" className="button button-ghost">
+                Read the full warranty
+                <ArrowRight aria-hidden="true" />
+              </Link>
+              <Link href="/faq" className="button button-ghost">
+                Common questions
+                <ArrowRight aria-hidden="true" />
+              </Link>
             </div>
-          ))}
+          </Reveal>
         </div>
       </section>
 
       <CtaBand
-        title="Start with a conversation."
-        copy="Tell us what you need — solar, security or both — and we will survey the site, design the system and give you a written specification. Free, no obligation."
+        title="Start with a conversation, not a quote."
+        copy="Tell us what you need — solar, security or both. We survey the site, design the system and hand you a written specification. Free, and yours to keep either way."
       />
     </>
   )

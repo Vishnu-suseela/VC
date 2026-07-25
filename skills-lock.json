@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "impeccable": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/impeccable/SKILL.md",
+      "computedHash": "702099286366bb9baaad1984d003b02fb33ee5cc8d396cd376928f5f674c3464"
+    },
+    "motion-graphics": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "skillPath": "skills/motion-graphics/SKILL.md",
+      "computedHash": "79a65357280bcdf044843b751a79ef65878636c000aceb86aed952a8efbba3d9"
+    }
+  }
+}

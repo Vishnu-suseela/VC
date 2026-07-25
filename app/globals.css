@@ -821,10 +821,30 @@
 .footer-brand { display: grid; gap: 1.4rem; align-content: start; justify-items: start; }
 .footer-brand h2 { font-size: clamp(1.5rem, 2.4vw, 2rem); line-height: 1.2; max-width: 22rem; }
 .footer-brand p { color: var(--muted-fg); font-size: 0.9rem; line-height: 1.7; max-width: 24rem; }
-.footer-socials { display: flex; gap: 0.6rem; }
-.footer-socials a { display: grid; place-items: center; width: 2.35rem; height: 2.35rem; border: 1px solid var(--line-strong); border-radius: 3px; color: var(--muted-fg); transition: color 0.3s ease, border-color 0.3s ease, transform 0.3s ease; }
-.footer-socials a:hover { color: var(--amber); border-color: var(--amber); transform: translateY(-2px); }
-.footer-socials svg { width: 1rem; height: 1rem; }
+  .footer-socials { display: flex; flex-wrap: wrap; gap: 0.5rem 1.4rem; align-items: center; }
+  .footer-socials a {
+    position: relative;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--muted-fg);
+    padding-bottom: 0.3rem;
+    transition: color 0.3s ease;
+  }
+  .footer-socials a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--amber);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s var(--ease);
+  }
+  .footer-socials a:hover { color: var(--amber); }
+  .footer-socials a:hover::after { transform: scaleX(1); }
 
 .footer-columns { display: grid; gap: 2.4rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (min-width: 720px) { .footer-columns { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
@@ -897,6 +917,113 @@
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
   .hero-haze, .hero-relay::before, .hero-relay::after, .relay-pulse, .live-dot, .scan, .story-relay-line, .story-relay-dot, .marquee-track { animation: none; }
 }
+
+/* ============ SERVICE INDEX (pinned sequence) ============ */
+.svc-index { position: relative; display: grid; gap: 3rem; }
+.svc-stage { display: none; }
+.svc-list { position: relative; display: grid; gap: 4.5rem; list-style: none; margin: 0; padding: 0; }
+.svc-rail { display: none; }
+.svc-entry { position: relative; scroll-margin-top: 7rem; }
+.svc-entry > div { display: grid; gap: 1.15rem; justify-items: start; }
+.svc-entry-head { display: flex; align-items: baseline; gap: 1.1rem; }
+.svc-num {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  letter-spacing: 0.16em;
+  color: var(--muted-fg);
+  padding-top: 0.15rem;
+  transition: color 0.55s var(--ease);
+}
+.svc-entry.is-active .svc-num { color: var(--amber); }
+.svc-entry-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--ink);
+}
+.svc-entry-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 45%, oklch(0.085 0.017 255 / 0.55));
+}
+.svc-entry-media img { transition: transform 1.3s var(--ease); }
+.svc-entry:hover .svc-entry-media img { transform: scale(1.05); }
+.svc-entry .prose-body { font-size: 0.98rem; max-width: 34rem; }
+.svc-includes { display: grid; gap: 0.6rem; list-style: none; margin: 0.3rem 0 0; padding: 0; }
+.svc-includes li { display: flex; gap: 0.65rem; align-items: flex-start; font-size: 0.86rem; color: var(--muted-fg); line-height: 1.55; }
+.svc-includes svg { width: 0.85rem; height: 0.85rem; color: var(--signal); flex-shrink: 0; margin-top: 0.3rem; }
+
+@media (min-width: 1000px) {
+  .svc-index { grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr); gap: 4.5rem; align-items: start; }
+  .svc-stage { display: block; position: sticky; top: 0; height: 100vh; padding-block: 7vh; }
+  .svc-stage-frame {
+    position: relative;
+    height: 86vh;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: var(--ink);
+    isolation: isolate;
+  }
+  .svc-stage-layer { position: absolute; inset: 0; }
+  .svc-stage-grain {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg, oklch(0.085 0.017 255 / 0.18) 0%, transparent 32%, oklch(0.085 0.017 255 / 0.8) 100%);
+  }
+  .svc-stage-tag { position: absolute; inset-inline: 1.6rem; bottom: 1.5rem; z-index: 2; display: grid; gap: 0.45rem; }
+  .svc-stage-tag b { font-family: var(--font-serif); font-weight: 400; font-size: 1.35rem; letter-spacing: -0.01em; }
+
+  .svc-list { gap: 0; padding-left: 2.75rem; }
+  .svc-rail { display: block; position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: var(--line); }
+  .svc-rail i { display: block; width: 1px; height: 100%; background: linear-gradient(to bottom, var(--amber), var(--signal)); }
+
+  .svc-entry { min-height: 82vh; display: flex; align-items: center; padding-block: 3rem; }
+  .svc-entry::before {
+    content: '';
+    position: absolute;
+    left: -2.75rem;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    margin: -3px 0 0 -3px;
+    border-radius: 50%;
+    background: var(--background);
+    border: 1px solid var(--line-strong);
+    transition: background 0.55s var(--ease), border-color 0.55s var(--ease), transform 0.55s var(--ease);
+  }
+  .svc-entry.is-active::before { background: var(--amber); border-color: var(--amber); transform: scale(1.4); }
+  .svc-entry > div { gap: 1.5rem; }
+  /* The pinned stage carries the imagery on desktop — no duplicate thumbnail. */
+  .svc-entry-media { display: none; }
+  .svc-entry-head { gap: 1.4rem; align-items: baseline; }
+  .svc-num {
+    font-size: clamp(2.6rem, 3.4vw, 3.6rem);
+    line-height: 0.8;
+    letter-spacing: -0.02em;
+    color: oklch(1 0 0 / 14%);
+    padding-top: 0;
+    transition: color 0.6s var(--ease);
+  }
+  .svc-entry.is-active .svc-num { color: var(--amber); }
+  .svc-entry h3 { font-size: clamp(1.7rem, 2.9vw, 2.4rem); color: var(--muted-fg); }
+  .svc-entry.is-active h3 { color: var(--foreground); }
+  .svc-entry .prose-body { font-size: 1.05rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .svc-entry { min-height: 0; }
+}
+
+/* ============ SCROLL-DRAWN RULE ============ */
+.scroll-rule { height: 1px; background: var(--line); overflow: hidden; }
+.scroll-rule span { display: block; height: 1px; background: linear-gradient(90deg, var(--amber), var(--signal)); }
 
 /* ============ TWO-COLUMN DETAIL LAYOUTS ============ */
 @media (min-width: 900px) {

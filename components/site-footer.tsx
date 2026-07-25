@@ -1,4 +1,4 @@
-import { ArrowUpRight, Clock, ExternalLink, Mail, MapPin, Phone, Sun } from 'lucide-react'
+import { ArrowUpRight, Clock, Mail, MapPin, Phone, Sun } from 'lucide-react'
 import Link from 'next/link'
 import { CONTACT } from '@/lib/site-data'
 
@@ -78,12 +78,11 @@ export function SiteFooter() {
             <ArrowUpRight aria-hidden="true" />
           </Link>
           <div className="footer-socials">
-            {socials.map(([label, href]) => (
-              <a key={label} href={href} aria-label={label} target="_blank" rel="noreferrer noopener" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.78rem', color: 'var(--muted-fg)', textDecoration: 'none' }}>
-                <ExternalLink aria-hidden="true" style={{ width: '0.85rem', height: '0.85rem' }} />
-                {label}
-              </a>
-            ))}
+              {socials.map(([label, href]) => (
+                <a key={label} href={href} target="_blank" rel="noreferrer noopener">
+                  {label}
+                </a>
+              ))}
           </div>
         </div>
 
