@@ -2,15 +2,20 @@ import { ArrowRight, ArrowUpRight, Check, Clock, MapPin, Phone, Radio, ShieldChe
 import Image from 'next/image'
 import Link from 'next/link'
 import {
+  Aperture,
   Counter,
   Curtain,
   HeroContent,
+  HeroExit,
   HeroHeadline,
   HeroLine,
   HeroMedia,
+  HeroVideo,
   Magnetic,
   Parallax,
   Reveal,
+  ScrollScene,
+  Seam,
   Stagger,
   StaggerItem,
   WordReveal,
@@ -55,9 +60,7 @@ export default function HomePage() {
     <>
       <section className="hero" aria-labelledby="hero-title">
         <HeroMedia>
-          <video autoPlay muted loop playsInline preload="auto" poster="/images/solar-estate.jpeg" aria-hidden="true">
-            <source src="/media/hero-upscaled.mp4" type="video/mp4" />
-          </video>
+          <HeroVideo src="/media/hero-upscaled.mp4" plate="/images/solar-estate.jpeg" />
         </HeroMedia>
         <div className="hero-shade" />
         <div className="hero-vignette" />
@@ -76,7 +79,7 @@ export default function HomePage() {
           <i />
         </div>
 
-        <div style={{ position: 'relative', zIndex: 2, width: '100%' }}>
+        <HeroExit className="hero-stage">
           <HeroContent>
             <HeroLine>
               <p className="chapter">Solar Shield Technologies · Andhra Pradesh</p>
@@ -129,7 +132,7 @@ export default function HomePage() {
               ))}
             </div>
           </div>
-        </div>
+        </HeroExit>
       </section>
 
       <div className="marquee" aria-hidden="true">
@@ -144,45 +147,49 @@ export default function HomePage() {
         </div>
       </div>
 
+      <Seam label="The thesis" />
+
       <section className="manifesto" aria-label="Our approach">
-        <Parallax className="manifesto-media" distance={60}>
-          <Image src="/images/solar-estate.jpeg" alt="" fill sizes="100vw" style={{ objectPosition: 'center 45%' }} />
-        </Parallax>
+        <Aperture className="manifesto-media">
+          <Image src="/images/night-estate.jpeg" alt="" fill sizes="100vw" style={{ objectPosition: 'center 52%' }} />
+        </Aperture>
         <div className="manifesto-shade" />
         <div className="manifesto-content">
-          <Reveal>
-            <p className="chapter">The thesis</p>
-          </Reveal>
+          <ScrollScene lift={56}>
+            <p className="chapter">One building. Two systems. One team.</p>
+          </ScrollScene>
           <WordReveal
             as="h2"
             className="display-md"
-            text="Most buildings buy power from one company and safety from another. We think a building should generate its own electricity and watch its own perimeter, designed once, by one team, so nothing falls between the two."
+            text="A building buys its power from one company and its safety from another, then lives in the gap between them. We close that gap — the array that generates and the cameras that watch, specified together, installed by the same hands, answerable to one number."
           />
-          <Reveal delay={0.15}>
+          <ScrollScene lift={34}>
             <Link href="/about" className="button button-quiet">
               Read how we work
               <ArrowRight aria-hidden="true" />
             </Link>
-          </Reveal>
+          </ScrollScene>
         </div>
       </section>
 
       <SunPathStory />
 
-      <section className="section-shell" id="solar">
+      <Seam label="01 — Solar" />
+
+      <section className="section-shell" id="solar" style={{ paddingBlockStart: '2.5rem' }}>
         <div className="section-heading">
           <div>
-            <Reveal>
-              <p className="chapter">01 — Solar systems</p>
-            </Reveal>
+            <ScrollScene lift={40}>
+              <p className="chapter">Sized to the roof, not to the invoice</p>
+            </ScrollScene>
             <WordReveal as="h2" text="Three architectures. One honest recommendation." />
           </div>
-          <Reveal delay={0.1}>
+          <ScrollScene lift={40}>
             <p>
-              The right system depends on your grid reliability, your night load and your roof, not on what carries the highest
-              margin. Here is the plain comparison.
+              Grid reliability, night load and roof geometry decide the system — never the margin on the quote. Here is the plain
+              comparison, in the order most people need to read it.
             </p>
-          </Reveal>
+          </ScrollScene>
         </div>
 
         <Stagger className="card-grid card-grid-3">
@@ -249,17 +256,17 @@ export default function HomePage() {
         <div className="section-shell" style={{ position: 'relative' }}>
           <div className="section-heading">
             <div>
-              <Reveal>
+              <ScrollScene lift={40}>
                 <p className="chapter">02 — Surveillance</p>
-              </Reveal>
+              </ScrollScene>
               <WordReveal as="h2" text="Coverage that holds after dark." />
             </div>
-            <Reveal delay={0.1}>
+            <ScrollScene lift={40}>
               <p>
-                We map entry points, blind corners and asset zones first, then specify the fewest cameras that cover them properly.
-                Analytics run on the camera, not on a subscription.
+                Entry points, blind corners and asset zones get mapped first. Then we specify the fewest cameras that cover them
+                properly — with the analytics running on the camera, not on a subscription.
               </p>
-            </Reveal>
+            </ScrollScene>
           </div>
 
           <Stagger className="card-grid card-grid-3">
@@ -298,20 +305,22 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section-shell" id="projects">
+      <Seam label="03 — Selected work" />
+
+      <section className="section-shell" id="projects" style={{ paddingBlockStart: '2.5rem' }}>
         <div className="section-heading">
           <div>
-            <Reveal>
-              <p className="chapter">03 — Selected work</p>
-            </Reveal>
+            <ScrollScene lift={40}>
+              <p className="chapter">Commissioned, handed over, still running</p>
+            </ScrollScene>
             <WordReveal as="h2" text="Built, commissioned, still running." />
           </div>
-          <Reveal delay={0.1}>
+          <ScrollScene lift={40}>
             <p>
-              Residential rooftops through industrial sheds and estate perimeters. Every one of these was surveyed, designed and
-              installed by the same team.
+              Family rooftops through commercial sheds and estate perimeters. Every one of these was surveyed, designed and
+              installed by the same team — and every one is still under our number.
             </p>
-          </Reveal>
+          </ScrollScene>
         </div>
 
         <Curtain>
@@ -321,8 +330,9 @@ export default function HomePage() {
                 src={featured.image || '/placeholder.svg'}
                 alt={featured.title}
                 fill
+                priority={false}
                 sizes="100vw"
-                style={{ objectPosition: 'center 58%' }}
+                style={{ objectPosition: 'center 46%' }}
               />
             </div>
             <div className="featured-copy">
@@ -361,17 +371,17 @@ export default function HomePage() {
         <div className="section-shell">
           <div className="section-heading">
             <div>
-              <Reveal>
+              <ScrollScene lift={40}>
                 <p className="chapter">04 — Services</p>
-              </Reveal>
+              </ScrollScene>
               <WordReveal as="h2" text="Handover is the beginning, not the invoice." />
             </div>
-            <Reveal delay={0.1}>
+            <ScrollScene lift={40}>
               <p>
                 An array is a twenty-five year asset. A camera network is a system that lives. Five services carry both, in the
                 order they are actually needed — survey to install, install to upkeep, upkeep to the call you make at 9pm.
               </p>
-            </Reveal>
+            </ScrollScene>
           </div>
 
           <ServiceIndex />
@@ -391,22 +401,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section-shell" aria-label="Why clients choose us">
-        <Stagger className="card-grid card-grid-3" step={0.1}>
+      <Seam label="Why clients stay" />
+
+      <section className="section-shell" aria-label="Why clients choose us" style={{ paddingBlockStart: '2.5rem' }}>
+        <Stagger className="card-grid card-grid-3" step={0.13}>
           {trustPillars.map((t) => (
             <StaggerItem key={t.title}>
-              <div
-                style={{
-                  display: 'grid',
-                  gap: '1rem',
-                  padding: '2rem',
-                  border: '1px solid var(--line)',
-                  borderRadius: 3,
-                  background: 'var(--panel)',
-                  height: '100%',
-                  alignContent: 'start',
-                }}
-              >
+              <div className="pillar">
                 <t.icon aria-hidden="true" style={{ width: '1.5rem', height: '1.5rem', color: 'var(--amber)' }} />
                 <h3 className="display-sm">{t.title}</h3>
                 <p className="prose-body" style={{ fontSize: '0.93rem' }}>

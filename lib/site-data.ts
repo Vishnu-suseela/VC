@@ -68,7 +68,7 @@ export const cameras = [
 export const projects = [
   { label: 'Residential rooftop', title: 'Grid-connected comfort for the family home.', image: '/images/project-residential.jpeg', meta: 'Vijayawada · 5 kW on-grid' },
   { label: 'Commercial rooftop', title: 'Lower operating costs for growing businesses.', image: '/images/project-commercial.png', meta: 'Guntur · 25 kW on-grid' },
-  { label: 'Industrial rooftop', title: 'Long-term reliability, engineered at scale.', image: '/images/project-industrial.png', meta: 'Nunna · 110 kW on-grid' },
+  { label: 'Estate residence', title: 'A house that runs on its own roof, and watches its own gate.', image: '/images/project-industrial.png', meta: 'Vijayawada · 10 kW hybrid + 8-camera perimeter' },
   { label: 'Ground mount', title: 'Maximum generation across open land.', image: '/images/night-estate.jpeg', meta: 'Kankipadu · 40 kW hybrid' },
   { label: 'Night watch', title: 'Quiet, dependable, always on.', image: '/images/project-night-watch.jpeg', meta: 'Estate perimeter · 12 IP cameras' },
 ]

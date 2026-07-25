@@ -48,8 +48,8 @@ export function Reveal({
 export function Stagger({
   children,
   className,
-  step = 0.09,
-  once = false,
+  step = 0.11,
+  once = true,
 }: {
   children: ReactNode
   className?: string
@@ -62,19 +62,21 @@ export function Stagger({
       className={className}
       initial={reduce ? undefined : 'hidden'}
       whileInView={reduce ? undefined : 'show'}
-      viewport={{ once, margin: '-10% 0px -10% 0px' }}
-      variants={{ hidden: {}, show: { transition: { staggerChildren: step } } }}
+      viewport={{ once, amount: 0.2, margin: '0px 0px -14% 0px' }}
+      variants={{ hidden: {}, show: { transition: { staggerChildren: step, delayChildren: 0.08 } } }}
+      style={{ perspective: 1400 }}
     >
       {children}
     </motion.div>
   )
 }
 
+/* Cards rise out of an occluding mask — weight, not bounce. */
 export function StaggerItem({
   children,
   className,
   style,
-  y = 30,
+  y = 64,
 }: {
   children: ReactNode
   className?: string
@@ -84,10 +86,126 @@ export function StaggerItem({
   return (
     <motion.div
       className={className}
-      style={style}
-      variants={{ hidden: { opacity: 0, y }, show: { opacity: 1, y: 0 } }}
-      transition={{ duration: 0.8, ease: EASE }}
+      style={{ willChange: 'transform, opacity, clip-path, filter', transformPerspective: 1400, ...style }}
+      variants={{
+        hidden: {
+          opacity: 0,
+          y,
+          scale: 0.955,
+          rotateX: 7,
+          clipPath: 'inset(18% 0% 0% 0%)',
+          filter: 'blur(9px) brightness(0.7)',
+        },
+        show: {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          rotateX: 0,
+          clipPath: 'inset(0% 0% 0% 0%)',
+          filter: 'blur(0px) brightness(1)',
+        },
+      }}
+      transition={{
+        duration: 1.15,
+        ease: [0.16, 1, 0.3, 1],
+        filter: { duration: 1.4, ease: [0.16, 1, 0.3, 1] },
+        clipPath: { duration: 1.3, ease: [0.16, 1, 0.3, 1] },
+      }}
     >
+      {children}
+    </motion.div>
+  )
+}
+
+/* ---------- Scroll-linked scene: content settles as it enters the frame ---------- */
+export function ScrollScene({
+  children,
+  className,
+  lift = 70,
+  style,
+}: {
+  children: ReactNode
+  className?: string
+  lift?: number
+  style?: CSSProperties
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+  const reduce = useReducedMotion()
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'center center'] })
+  const p = useSpring(scrollYProgress, { stiffness: 90, damping: 26, restDelta: 0.001 })
+  const y = useTransform(p, [0, 1], [lift, 0])
+  const opacity = useTransform(p, [0, 0.55, 1], [0, 0.8, 1])
+  const scale = useTransform(p, [0, 1], [0.965, 1])
+  return (
+    <motion.div ref={ref} className={className} style={reduce ? style : { y, opacity, scale, ...style }}>
+      {children}
+    </motion.div>
+  )
+}
+
+/* ---------- Seam: scroll-drawn light line with a travelling node ---------- */
+export function Seam({ label }: { label?: string }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const reduce = useReducedMotion()
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 95%', 'end 55%'] })
+  const p = useSpring(scrollYProgress, { stiffness: 110, damping: 30, restDelta: 0.001 })
+  const scaleX = useTransform(p, [0, 1], [0, 1])
+  const nodeX = useTransform(p, [0, 1], ['-50%', '50%'])
+  const glow = useTransform(p, [0, 0.6, 1], [0, 1, 0.55])
+  const labelOpacity = useTransform(p, [0.35, 0.85], [0, 1])
+  const labelY = useTransform(p, [0.35, 0.85], [12, 0])
+
+  return (
+    <div className="seam" ref={ref} aria-hidden="true">
+      <div className="seam-rail">
+        <motion.span className="seam-line" style={reduce ? { scaleX: 1 } : { scaleX }} />
+        <motion.span className="seam-node" style={reduce ? { opacity: 1 } : { x: nodeX, opacity: glow }} />
+      </div>
+      {label ? (
+        <motion.span className="seam-label" style={reduce ? undefined : { opacity: labelOpacity, y: labelY }}>
+          {label}
+        </motion.span>
+      ) : null}
+    </div>
+  )
+}
+
+/* ---------- Aperture: iris/curtain opening driven by scroll (hero → next scene) ---------- */
+export function Aperture({ children, className }: { children: ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const reduce = useReducedMotion()
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'center center'] })
+  const p = useSpring(scrollYProgress, { stiffness: 80, damping: 24, restDelta: 0.001 })
+  const top = useTransform(p, [0, 1], [50, 0])
+  const clipPath = useTransform(top, (v) => `inset(${v}% 0% ${v}% 0%)`)
+  const scale = useTransform(p, [0, 1], [1.18, 1])
+  const opacity = useTransform(p, [0, 0.4, 1], [0.25, 0.8, 1])
+  return (
+    <div ref={ref} className={className} style={{ overflow: 'hidden' }}>
+      <motion.div style={reduce ? { height: '100%' } : { clipPath, scale, opacity, height: '100%' }}>{children}</motion.div>
+    </div>
+  )
+}
+
+/* ---------- Hero exit: the hero recedes as the next scene takes over ---------- */
+export function HeroExit({ children, className }: { children: ReactNode; className?: string }) {
+  const reduce = useReducedMotion()
+  const { scrollY } = useScroll()
+  const [vh, setVh] = useState(900)
+
+  useEffect(() => {
+    const read = () => setVh(window.innerHeight)
+    read()
+    window.addEventListener('resize', read)
+    return () => window.removeEventListener('resize', read)
+  }, [])
+
+  const y = useTransform(scrollY, [0, vh * 0.9], [0, -120])
+  const opacity = useTransform(scrollY, [0, vh * 0.45, vh * 0.8], [1, 0.65, 0])
+  const filter = useTransform(scrollY, [0, vh * 0.8], ['blur(0px)', 'blur(7px)'])
+
+  return (
+    <motion.div className={className} style={reduce ? undefined : { y, opacity, filter }}>
       {children}
     </motion.div>
   )
@@ -208,7 +326,7 @@ export function Counter({
   decimals?: number
 }) {
   const ref = useRef<HTMLSpanElement>(null)
-  const inView = useInView(ref, { once: true, margin: '-15% 0px' })
+  const inView = useInView(ref, { once: true, margin: '0px 0px 8% 0px' })
   const reduce = useReducedMotion()
   const [display, setDisplay] = useState(reduce ? value : 0)
 
@@ -252,6 +370,40 @@ export function HeroMedia({ children }: { children: ReactNode }) {
     <motion.div ref={ref} className="hero-media" style={reduce ? undefined : { scale, y }}>
       {children}
     </motion.div>
+  )
+}
+
+/* ---------- Hero video: no poster flash, fades up from black when ready ---------- */
+export function HeroVideo({ src, plate }: { src: string; plate: string }) {
+  const [ready, setReady] = useState(false)
+  return (
+    <>
+      {/* Soft out-of-focus plate: holds the frame while the film loads, then dissolves. */}
+      <motion.img
+        src={plate}
+        alt=""
+        aria-hidden="true"
+        className="hero-plate"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: ready ? 0 : 1 }}
+        transition={{ duration: ready ? 1.5 : 1.1, ease: 'easeInOut' }}
+      />
+      <motion.video
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        aria-hidden="true"
+        onCanPlay={() => setReady(true)}
+        onPlaying={() => setReady(true)}
+        initial={{ opacity: 0, scale: 1.06 }}
+        animate={ready ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.06 }}
+        transition={{ opacity: { duration: 1.6, ease: 'easeOut' }, scale: { duration: 2.4, ease: [0.16, 1, 0.3, 1] } }}
+      >
+        <source src={src} type="video/mp4" />
+      </motion.video>
+    </>
   )
 }
 
